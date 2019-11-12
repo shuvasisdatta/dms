@@ -1,4 +1,4 @@
-<p align="center">DMS | Document Management System</p>
+<h1 align="center">DMS | Document Management System</h1>
 
 ## About DMS
 
