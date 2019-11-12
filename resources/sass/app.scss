@@ -1,0 +1,25 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// font-awesome
+$fa-font-path: "../webfonts";
+
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// admin-lte
+@import '~admin-lte/dist/css/adminlte.css';
+
+@import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "@fortawesome/fontawesome-free/scss/solid.scss";
+@import "@fortawesome/fontawesome-free/scss/brands.scss";
+
+// Dynamic acitve link highlight
+.router-link-exact-active {
+    background-color: #007bff;
+    color: #fff !important;
+}
