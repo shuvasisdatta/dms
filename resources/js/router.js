@@ -129,6 +129,10 @@ router.beforeEach(async(to, from, next) => {
             next()
         }
     } else {
+        // if the url is login and user is already authenticated then route to root url else pass the next()
+        if(to.path === '/login' && (router.app.isAuthenticated || router.app.access_token)) {
+            next('/')
+        }
         next()
     }
     
