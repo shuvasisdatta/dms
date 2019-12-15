@@ -3083,7 +3083,7 @@ __webpack_require__.r(__webpack_exports__);
       },
       perPageDropDown: [5, 10, 15],
       editMode: false,
-      api_url: 'http://192.168.1.11:8000/api/document/',
+      api_url: '/api/document/',
       documents: [],
       departments: [],
       plants: [],
@@ -71303,8 +71303,8 @@ router.afterEach(function (to, from) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Apache24\htdocs\docs.splerp.com\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Apache24\htdocs\docs.splerp.com\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\dms\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\dms\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
