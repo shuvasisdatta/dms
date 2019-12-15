@@ -49,6 +49,7 @@ DMS is abbreviated as Document Mangement System, specially designed for Plant or
 - Run this command 'php artisan migrate:fresh --seed' to get the initial database setup
 - Run this command 'php artisan passport:isntall' to get install the Passport for api authentication
 - Run this command 'php artisan serve' to serve the application
+- Edit upload_max_filesize and post_max_size in php.ini settings according to your requirement for uploading big size documents if necessary. By default the appllication stricts the document maximum size to be 100 MB. You can customize this by editing DocumentController 'store' method 
 
 ## Contributing
 
