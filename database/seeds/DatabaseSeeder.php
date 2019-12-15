@@ -32,6 +32,16 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin123$'), // password
             'remember_token' => Str::random(10),
         ]);
+        // make user 'User' with role User
+        $user = factory(App\User::class)->create([
+            'name' => 'User',
+            'department_id' => 1,
+            'role_id' => 2,
+            'email' => 'user@splerp.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('user123$'), // password
+            'remember_token' => Str::random(10),
+        ]);
 
         // attach admin role and "Instrument & Control" Department to the user admin
         // $user->roles()->sync(1);
