@@ -127,7 +127,7 @@ class DocumentController extends Controller
             'equipment_id' => 'required|numeric|exists:equipment,id',
             'category_id'   => 'required|numeric|exists:categories,id',
             'locker_id'     => 'required|numeric|exists:lockers,id',
-            'document'      => 'required|file|max:51200',
+            'document'      => 'required|file|max:102400', // Restrict maximum document size to 100 MB. You can customize it here.
         ]);
         
         $time= time();
