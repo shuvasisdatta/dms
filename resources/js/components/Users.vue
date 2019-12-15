@@ -217,7 +217,7 @@
                 },
                 perPageDropDown: [5, 10, 15],
                 editMode: false,
-                api_url: "api/user/",
+                api_url: "api/user",
                 users: [],
                 departments: [],
                 roles: [],
@@ -354,7 +354,7 @@
 
             updateData() {
                 this.$Progress.start()
-                this.form.put(this.api_url + this.form.id)
+                this.form.put(this.api_url + "/" + this.form.id)
                 .then(() => {
                     $('#Modal').modal('hide');
                     toast.fire({
@@ -389,7 +389,7 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.value) {
-                        axios.delete(this.api_url + id)
+                        axios.delete(this.api_url + "/" + id)
                         .then(() => {
                             toast.fire({
                                 title: 'Deleted successfully',

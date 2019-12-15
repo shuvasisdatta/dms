@@ -172,7 +172,7 @@
                 },
                 perPageDropDown: [5, 10, 15],
                 editMode: false,
-                api_url: '/api/equipment/',
+                api_url: '/api/equipment',
                 equipments: [],
                 plants: [],
                 form: new Form( {
@@ -306,7 +306,7 @@
 
             updateData() {
                 this.$Progress.start()
-                this.form.put(this.api_url + this.form.id)
+                this.form.put(this.api_url + "/" + this.form.id)
                 .then(() => {
                     $('#Modal').modal('hide');
                     toast.fire({
@@ -340,7 +340,7 @@
                 }).then((result) => {
                     if (result.value) {
                         this.$Progress.start();
-                        axios.delete(this.api_url + id)
+                        axios.delete(this.api_url + "/" + id)
                         .then(() => {
                             toast.fire({
                                 title: 'Deleted successfully',
