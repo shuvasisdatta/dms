@@ -24,7 +24,8 @@ const router = new Router({
                 title: 'Dashboard',
                 requiresAuth: true,
             }
-        }, {
+        }, 
+        {
             path: '/users',
             component: require('./components/Users.vue').default,
             meta: {
