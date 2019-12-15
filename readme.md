@@ -36,13 +36,19 @@ DMS is abbreviated as Document Mangement System, specially designed for Plant or
 - PDO PHP Extension
 - Tokenizer PHP Extension
 - XML PHP Extension 
+- Composer
+- Node.js
 
 ## Installation
 
 - Clone the Repository.
 - Copy .env.example to .env file and edit APP_NAME, APP_DEBUG, APP_TIMEZONE, APP_LOGO, and others if necessary
 - Open cmd or terminal and point to the current working direcotyr usind 'cd PATH' command where PATH is the cloned repository path
-- Run this command 'php artisan key:generate ' to get the application key
+- Run this command 'php artisan key:generate' to get the application key
+- Run this command 'php artisan storage:link' to link the storage
+- Run this command 'php artisan migrate:fresh --seed' to get the initial database setup
+- Run this command 'php artisan passport:isntall' to get install the Passport for api authentication
+- Run this command 'php artisan serve' to serve the application
 
 ## Contributing
 
