@@ -126,13 +126,20 @@ class DocumentController extends Controller
             'plant_id'      => 'required|numeric|exists:plants,id',
             'equipment_id' => 'required|numeric|exists:equipment,id',
             'category_id'   => 'required|numeric|exists:categories,id',
-            'locker_id'     => 'required|numeric|exists:lockers,id',
-            'document'      => 'required|file|max:102400', // Restrict maximum document size to 100 MB. You can customize it here.
+            'locker_id'     => 'required|numeric|exists:lockers,id'
         ]);
         
-        $time= time();
-        $fileName = Str::before($request->document->getClientOriginalName(), '.'.$request->document->extension()) . $time . '.'.$request->document->extension(); 
-        $path = $request->document->storeAs('public/documents/'. $request->plant_id . '/' . $request->equipment_id . '/' . $request->department_id . '/'. $request->category_id . '/' . $request->locker_id . '/' , $fileName);
+        if($request->document) {
+            $this->validate($request, [
+                'document'      => 'required|file|max:51200', // Restrict maximum document size to 50 MB. You can customize it here.
+            ]);
+        }
+
+        $time= round(microtime(true) * 1000); // time in miliseconds
+        if($request->document) {
+            $fileName = Str::before($request->document->getClientOriginalName(), '.'.$request->document->extension()) . $time . '.'.$request->document->extension(); 
+            $path = $request->document->storeAs('public/documents/'. $request->plant_id . '/' . $request->equipment_id . '/' . $request->department_id . '/'. $request->category_id . '/' . $request->locker_id . '/' , $fileName);
+        }
         
         $document = Document::create([
             'title'         => $request->title,    
@@ -142,9 +149,9 @@ class DocumentController extends Controller
             'equipment_id'  => $request->equipment_id,   
             'category_id'   => $request->category_id,   
             'locker_id'     => $request->locker_id,
-            'user_id'       => 1,
-            'type'          => $request->document->extension(),
-            'slug'          => $path
+            'user_id'       => 1, // by default it's Admin
+            'type'          => $request->document? $request->document->extension(): '',
+            'slug'          => $request->document? $path: $time
         ]);    
 
         return $document;
@@ -200,10 +207,13 @@ class DocumentController extends Controller
         $document = Document::find($id);
 
         if(!is_null($document)) {
-            unlink(Str::replaceLast('public', 'storage/', public_path($document->slug)));
-            // unlink(public_path(Str::after($document->slug, url('/'))));
-            // Storage::delete('public/'. Str::after($document->slug, url('/storage')));
-            
+            // if there is any document exists then delete it first before deleted from database
+            if($document->type !== '') {
+                unlink(Str::replaceLast('public', 'storage/', public_path($document->slug)));
+                // unlink(public_path(Str::after($document->slug, url('/'))));
+                // Storage::delete('public/'. Str::after($document->slug, url('/storage')));
+            }
+
             $document->delete();
             return ['message' => 'Document deleted Successfully'];
         } 
