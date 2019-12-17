@@ -104,12 +104,18 @@
                             </tr>
                             <!-- viewDocument = true; documentSrc = document.slug.replace('public/', 'storage/');  -->
                             <tr v-for="document in documents" :key="document.id">
-                                <td v-if="documentAllowedToEmbed.includes(document.type)">
+                                <!-- title with allowed to show in modal -->
+                                <td  v-if="documentAllowedToEmbed.includes(document.type)">
                                     <a href="#" @click="documentModalShow(document);">
                                         {{ document.title }}
                                     </a>
                                 </td>
-                                <td v-else>
+                                <!-- title without soft file -->
+                                <td  v-else-if="/^\d+$/.test(document.slug)">
+                                    <a href="#">{{ document.title }}</a>
+                                </td>
+                                <!-- title with direct download instead of modal show -->
+                                <td  v-else>
                                     <a :href="document.slug.replace('public/', 'storage/')" download>
                                         {{ document.title }}
                                     </a>
@@ -120,8 +126,9 @@
                                 <td>{{ document.equipment.name }}</td>
                                 <td>{{ document.category.name }}</td>
                                 <td>{{ document.locker.name }}</td>
-                                <td>
-                                    <i class="red fas fa-file fa-3x"
+                                <td style="width:50px;">
+                                    <i v-if="document.type !== ''"
+                                        class="red fas fa-file fa-3x"
                                         :class="{'fa-file-pdf': documentTypePdf.includes(document.type), 
                                             'fa-file-powerpoint': documentTypePowerpoint.includes(document.type),
                                             'fa-file-word': documentTypeWord.includes(document.type),
@@ -133,8 +140,8 @@
                                         :title="document.type">
                                     </i>
                                 </td>
-                                <td>{{ document.created_at }}</td>
-                                <td v-if="$parent.userRole === 'Admin'">
+                                <td style="min-width:110px;">{{ document.created_at }}</td>
+                                <td style="min-width:120px;" class="text-center" v-if="$parent.userRole === 'Admin'">
                                     <button class="btn btn-success" @click="editModal(document);"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-danger" @click="destroyData(document.id);"><i class="fas fa-trash"></i></button>
                                 </td>
