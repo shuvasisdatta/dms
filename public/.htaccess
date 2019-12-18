@@ -20,7 +20,7 @@
     RewriteRule ^ index.php [L]
 
     # Increase File Upload Size
-    php_value memory_limit 50M
-    php_value post_max_size 80M
-    php_value upload_max_filesize 50M
+    #php_value memory_limit 50M
+    php_value post_max_size 150M
+    php_value upload_max_filesize 100M
 </IfModule>
