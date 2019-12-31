@@ -1977,6 +1977,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -2322,6 +2327,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper_DataTable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helper/DataTable */ "./resources/js/components/helper/DataTable.vue");
 /* harmony import */ var _helper_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helper/Pagination */ "./resources/js/components/helper/Pagination.vue");
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2976,6 +2986,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3050,6 +3084,7 @@ __webpack_require__.r(__webpack_exports__);
       sortOrders[column.name] = -1;
     });
     return {
+      wantToUploadOrChangeDocument: 0,
       fileUploadPercentage: 0,
       documentSrc: '',
       documentTypeMusic: ['mp3'],
@@ -3140,7 +3175,9 @@ __webpack_require__.r(__webpack_exports__);
       this.documentSrc = undefined;
     },
     createModal: function createModal() {
-      this.editMode = false;
+      this.editMode = false; // By default document uploader view is true
+
+      this.wantToUploadOrChangeDocument = 1;
       this.form.clear();
       this.form.reset();
       this.fileUploadPercentage = 0;
@@ -3148,10 +3185,14 @@ __webpack_require__.r(__webpack_exports__);
       $('#Modal').modal('show');
     },
     editModal: function editModal(data) {
-      this.editMode = true;
+      this.editMode = true; // By default document uploader view is false
+
+      this.wantToUploadOrChangeDocument = 0;
       this.form.clear();
       this.form.reset();
-      this.getRelatedResources('edit');
+      this.getRelatedResources('edit'); // make document to empty string as this is not coming from server, it is local variable
+
+      data.document = '';
       this.form.fill(data);
       this.$emit('plantSelected', this.form.plant_id, 'edit');
       $('#Modal').modal('show');
@@ -3259,8 +3300,21 @@ __webpack_require__.r(__webpack_exports__);
     updateData: function updateData() {
       var _this4 = this;
 
-      this.$Progress.start();
-      this.form.put(this.api_url + "/" + this.form.id).then(function () {
+      this.$Progress.start(); // this.form.put(this.api_url + "/" + this.form.id)
+
+      this.form.submit('post', this.api_url + "/" + this.form.id, {
+        transformRequest: [function (data, headers) {
+          data['_method'] = 'PUT';
+          return _objectToFormData_js__WEBPACK_IMPORTED_MODULE_5___default()(data);
+        }],
+        onUploadProgress: function onUploadProgress(e) {
+          // Do whatever you want with the progress event
+          if (_this4.form.document) {
+            var percentCompleted = Math.round(e.loaded / e.total * 100);
+            _this4.fileUploadPercentage = percentCompleted;
+          }
+        }
+      }).then(function () {
         $('#Modal').modal('hide');
         toast.fire({
           title: 'Information updated successfully',
@@ -3399,6 +3453,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helper/Pagination */ "./resources/js/components/helper/Pagination.vue");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
+//
+//
 //
 //
 //
@@ -3811,6 +3869,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper_DataTable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helper/DataTable */ "./resources/js/components/helper/DataTable.vue");
 /* harmony import */ var _helper_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helper/Pagination */ "./resources/js/components/helper/Pagination.vue");
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4377,6 +4440,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4630,6 +4698,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper_DataTable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helper/DataTable */ "./resources/js/components/helper/DataTable.vue");
 /* harmony import */ var _helper_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helper/Pagination */ "./resources/js/components/helper/Pagination.vue");
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4971,6 +5044,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_3__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -47392,27 +47470,85 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
+        _c("div", { staticClass: "card-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right form-group" }, [
+              _c("label", { staticClass: "font-weight-normal mr-2" }, [
+                _vm._v("Filter Column")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.searchColumn,
+                      expression: "tableData.searchColumn"
+                    }
+                  ],
+                  staticClass: "custom-select mr-sm-2",
+                  attrs: { id: "columnFilter" },
+                  on: {
+                    change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
                           return o.selected
@@ -47423,149 +47559,97 @@ var render = function() {
                         })
                       _vm.$set(
                         _vm.tableData,
-                        "perPage",
+                        "searchColumn",
                         $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
                     }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right form-group" }, [
-            _c("label", { staticClass: "font-weight-normal mr-2" }, [
-              _vm._v("Filter Column")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
+                  }
+                },
+                [
+                  _c("option", { attrs: { selected: "", value: "*" } }, [
+                    _vm._v("All")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.filterableColumns, function(column) {
+                    return _c(
+                      "option",
+                      { key: column.name, domProps: { value: column.name } },
+                      [_vm._v(_vm._s(column.label))]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticClass: "sr-only",
+                  attrs: { for: "inlineFormInputName2" }
+                },
+                [_vm._v("Search")]
+              ),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.tableData.searchColumn,
-                    expression: "tableData.searchColumn"
+                    value: _vm.tableData.searchText,
+                    expression: "tableData.searchText"
                   }
                 ],
-                staticClass: "custom-select mr-sm-2",
-                attrs: { id: "columnFilter" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.tableData,
-                      "searchColumn",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { selected: "", value: "*" } }, [
-                  _vm._v("All")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.filterableColumns, function(column) {
-                  return _c(
-                    "option",
-                    { key: column.name, domProps: { value: column.name } },
-                    [_vm._v(_vm._s(column.label))]
-                  )
-                })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "sr-only",
-                attrs: { for: "inlineFormInputName2" }
-              },
-              [_vm._v("Search")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tableData.searchText,
-                  expression: "tableData.searchText"
-                }
-              ],
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "text",
-                id: "inlineFormInputName2",
-                placeholder: "Search here ..."
-              },
-              domProps: { value: _vm.tableData.searchText },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.$emit("searched")
+                staticClass: "form-control mr-sm-2",
+                attrs: {
+                  type: "text",
+                  id: "inlineFormInputName2",
+                  placeholder: "Search here ..."
                 },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.tableData, "searchText", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                domProps: { value: _vm.tableData.searchText },
                 on: {
-                  click: function($event) {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
                     return _vm.$emit("searched")
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.tableData, "searchText", $event.target.value)
                   }
                 }
-              },
-              [_c("i", { staticClass: "fas fa-search" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit" },
-                on: { click: _vm.createModal }
-              },
-              [_vm._v("Add New")]
-            )
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit" },
+                  on: { click: _vm.createModal }
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -47854,7 +47938,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Categories")])
     ])
   },
@@ -47994,27 +48078,85 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
+        _c("div", { staticClass: "card-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right form-group" }, [
+              _c("label", { staticClass: "font-weight-normal mr-2" }, [
+                _vm._v("Filter Column")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.searchColumn,
+                      expression: "tableData.searchColumn"
+                    }
+                  ],
+                  staticClass: "custom-select mr-sm-2",
+                  attrs: { id: "columnFilter" },
+                  on: {
+                    change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
                           return o.selected
@@ -48025,149 +48167,97 @@ var render = function() {
                         })
                       _vm.$set(
                         _vm.tableData,
-                        "perPage",
+                        "searchColumn",
                         $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
                     }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right form-group" }, [
-            _c("label", { staticClass: "font-weight-normal mr-2" }, [
-              _vm._v("Filter Column")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
+                  }
+                },
+                [
+                  _c("option", { attrs: { selected: "", value: "*" } }, [
+                    _vm._v("All")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.filterableColumns, function(column) {
+                    return _c(
+                      "option",
+                      { key: column.name, domProps: { value: column.name } },
+                      [_vm._v(_vm._s(column.label))]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticClass: "sr-only",
+                  attrs: { for: "inlineFormInputName2" }
+                },
+                [_vm._v("Search")]
+              ),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.tableData.searchColumn,
-                    expression: "tableData.searchColumn"
+                    value: _vm.tableData.searchText,
+                    expression: "tableData.searchText"
                   }
                 ],
-                staticClass: "custom-select mr-sm-2",
-                attrs: { id: "columnFilter" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.tableData,
-                      "searchColumn",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { selected: "", value: "*" } }, [
-                  _vm._v("All")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.filterableColumns, function(column) {
-                  return _c(
-                    "option",
-                    { key: column.name, domProps: { value: column.name } },
-                    [_vm._v(_vm._s(column.label))]
-                  )
-                })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "sr-only",
-                attrs: { for: "inlineFormInputName2" }
-              },
-              [_vm._v("Search")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tableData.searchText,
-                  expression: "tableData.searchText"
-                }
-              ],
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "text",
-                id: "inlineFormInputName2",
-                placeholder: "Search here ..."
-              },
-              domProps: { value: _vm.tableData.searchText },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.$emit("searched")
+                staticClass: "form-control mr-sm-2",
+                attrs: {
+                  type: "text",
+                  id: "inlineFormInputName2",
+                  placeholder: "Search here ..."
                 },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.tableData, "searchText", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                domProps: { value: _vm.tableData.searchText },
                 on: {
-                  click: function($event) {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
                     return _vm.$emit("searched")
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.tableData, "searchText", $event.target.value)
                   }
                 }
-              },
-              [_c("i", { staticClass: "fas fa-search" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit" },
-                on: { click: _vm.createModal }
-              },
-              [_vm._v("Add New")]
-            )
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit" },
+                  on: { click: _vm.createModal }
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -48417,7 +48507,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Departments")])
     ])
   },
@@ -48463,123 +48553,127 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.tableData,
-                        "perPage",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
+        _c("div", { staticClass: "card-header" }, [
           _vm._m(0),
           _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Search"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searched")
-                  }
-                }
-              },
-              [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Reset Search"
-                },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searchReset")
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-power-off" }),
-                _vm._v("  Reset Search")
-              ]
-            ),
-            _vm._v(" "),
-            _vm.$parent.userRole === "Admin"
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary mb-2",
-                    attrs: { type: "submit" },
-                    on: {
-                      click: function($event) {
-                        _vm.createModal()
-                        _vm.viewDocument = false
-                        _vm.documentSrc = ""
-                      }
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "form-inline float-left" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
                     }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Search"
                   },
-                  [_vm._v("Add New")]
-                )
-              : _vm._e()
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Reset Search"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searchReset")
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-power-off" }),
+                  _vm._v("  Reset Search")
+                ]
+              ),
+              _vm._v(" "),
+              _vm.$parent.userRole === "Admin"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary mb-2",
+                      attrs: { type: "submit" },
+                      on: {
+                        click: function($event) {
+                          _vm.createModal()
+                          _vm.viewDocument = false
+                          _vm.documentSrc = ""
+                        }
+                      }
+                    },
+                    [_vm._v("Add New")]
+                  )
+                : _vm._e()
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -48887,6 +48981,12 @@ var render = function() {
                                 ]
                               )
                             ])
+                          : /^\d+$/.test(document.slug)
+                          ? _c("td", [
+                              _c("a", { attrs: { href: "#" } }, [
+                                _vm._v(_vm._s(document.title))
+                              ])
+                            ])
                           : _c("td", [
                               _c(
                                 "a",
@@ -48921,69 +49021,80 @@ var render = function() {
                         _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(document.locker.name))]),
                         _vm._v(" "),
-                        _c("td", [
-                          _c("i", {
-                            staticClass: "red fas fa-file fa-3x",
-                            class: {
-                              "fa-file-pdf": _vm.documentTypePdf.includes(
-                                document.type
-                              ),
-                              "fa-file-powerpoint": _vm.documentTypePowerpoint.includes(
-                                document.type
-                              ),
-                              "fa-file-word": _vm.documentTypeWord.includes(
-                                document.type
-                              ),
-                              "fa-file-excel": _vm.documentTypeExcel.includes(
-                                document.type
-                              ),
-                              "fa-file-video": _vm.documentTypeVideo.includes(
-                                document.type
-                              ),
-                              "fa-file-audio": _vm.documentTypeMusic.includes(
-                                document.type
-                              ),
-                              "fa-file-archive": _vm.documentTypeArchive.includes(
-                                document.type
-                              ),
-                              "fa-file-image": _vm.documentTypeImage.includes(
-                                document.type
-                              )
-                            },
-                            attrs: { title: document.type }
-                          })
+                        _c("td", { staticStyle: { width: "50px" } }, [
+                          document.type !== ""
+                            ? _c("i", {
+                                staticClass: "red fas fa-file fa-3x",
+                                class: {
+                                  "fa-file-pdf": _vm.documentTypePdf.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-powerpoint": _vm.documentTypePowerpoint.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-word": _vm.documentTypeWord.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-excel": _vm.documentTypeExcel.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-video": _vm.documentTypeVideo.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-audio": _vm.documentTypeMusic.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-archive": _vm.documentTypeArchive.includes(
+                                    document.type
+                                  ),
+                                  "fa-file-image": _vm.documentTypeImage.includes(
+                                    document.type
+                                  )
+                                },
+                                attrs: { title: document.type }
+                              })
+                            : _vm._e()
                         ]),
                         _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(document.created_at))]),
+                        _c("td", { staticStyle: { "min-width": "110px" } }, [
+                          _vm._v(_vm._s(document.created_at))
+                        ]),
                         _vm._v(" "),
                         _vm.$parent.userRole === "Admin"
-                          ? _c("td", [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-success",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.editModal(document)
+                          ? _c(
+                              "td",
+                              {
+                                staticClass: "text-center",
+                                staticStyle: { "min-width": "120px" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.editModal(document)
+                                      }
                                     }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-edit" })]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-danger",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.destroyData(document.id)
+                                  },
+                                  [_c("i", { staticClass: "fas fa-edit" })]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.destroyData(document.id)
+                                      }
                                     }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fas fa-trash" })]
-                              )
-                            ])
+                                  },
+                                  [_c("i", { staticClass: "fas fa-trash" })]
+                                )
+                              ]
+                            )
                           : _vm._e()
                       ])
                     })
@@ -49352,7 +49463,104 @@ var render = function() {
                       1
                     ),
                     _vm._v(" "),
-                    !_vm.editMode
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "custom-control custom-radio custom-control-inline"
+                      },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.wantToUploadOrChangeDocument,
+                              expression: "wantToUploadOrChangeDocument"
+                            }
+                          ],
+                          staticClass: "custom-control-input",
+                          attrs: {
+                            type: "radio",
+                            id: "customRadioInline1",
+                            name: "customRadioInline1"
+                          },
+                          domProps: {
+                            value: 1,
+                            checked: _vm._q(_vm.wantToUploadOrChangeDocument, 1)
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.wantToUploadOrChangeDocument = 1
+                            },
+                            change: function($event) {
+                              _vm.wantToUploadOrChangeDocument = 1
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "label",
+                          {
+                            staticClass: "custom-control-label",
+                            attrs: { for: "customRadioInline1" }
+                          },
+                          [_vm._v("Upload/Change Document")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "custom-control custom-radio custom-control-inline"
+                      },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.wantToUploadOrChangeDocument,
+                              expression: "wantToUploadOrChangeDocument"
+                            }
+                          ],
+                          staticClass: "custom-control-input",
+                          attrs: {
+                            type: "radio",
+                            id: "customRadioInline2",
+                            name: "customRadioInline1"
+                          },
+                          domProps: {
+                            value: 0,
+                            checked: _vm._q(_vm.wantToUploadOrChangeDocument, 0)
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.wantToUploadOrChangeDocument = 0
+                            },
+                            change: function($event) {
+                              _vm.wantToUploadOrChangeDocument = 0
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "label",
+                          {
+                            staticClass: "custom-control-label",
+                            attrs: { for: "customRadioInline2" }
+                          },
+                          [_vm._v("Don't Upload/Change Document")]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("br"),
+                    _c("br"),
+                    _vm._v(" "),
+                    _vm.wantToUploadOrChangeDocument
                       ? _c(
                           "div",
                           { staticClass: "form-group" },
@@ -49592,7 +49800,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Documents")])
     ])
   },
@@ -49638,121 +49846,125 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.tableData,
-                        "perPage",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
+        _c("div", { staticClass: "card-header" }, [
           _vm._m(0),
           _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Search"
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
                 },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searched")
-                  }
-                }
-              },
-              [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
-            ),
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
+            ]),
             _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Reset Search"
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Search"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
                 },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searchReset")
+                [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Reset Search"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searchReset")
+                    }
                   }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-power-off" }),
-                _vm._v("  Reset Search")
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary mb-2",
-                attrs: { type: "submit" },
-                on: {
-                  click: function($event) {
-                    _vm.createModal()
-                    _vm.viewDocument = false
-                    _vm.documentSrc = ""
+                },
+                [
+                  _c("i", { staticClass: "fas fa-power-off" }),
+                  _vm._v("  Reset Search")
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary mb-2",
+                  attrs: { type: "submit" },
+                  on: {
+                    click: function($event) {
+                      _vm.createModal()
+                      _vm.viewDocument = false
+                      _vm.documentSrc = ""
+                    }
                   }
-                }
-              },
-              [_vm._v("Add New")]
-            )
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -50118,7 +50330,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Equipments")])
     ])
   },
@@ -50164,27 +50376,85 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
+        _c("div", { staticClass: "card-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right form-group" }, [
+              _c("label", { staticClass: "font-weight-normal mr-2" }, [
+                _vm._v("Filter Column")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.searchColumn,
+                      expression: "tableData.searchColumn"
+                    }
+                  ],
+                  staticClass: "custom-select mr-sm-2",
+                  attrs: { id: "columnFilter" },
+                  on: {
+                    change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
                           return o.selected
@@ -50195,149 +50465,97 @@ var render = function() {
                         })
                       _vm.$set(
                         _vm.tableData,
-                        "perPage",
+                        "searchColumn",
                         $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
                     }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right form-group" }, [
-            _c("label", { staticClass: "font-weight-normal mr-2" }, [
-              _vm._v("Filter Column")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
+                  }
+                },
+                [
+                  _c("option", { attrs: { selected: "", value: "*" } }, [
+                    _vm._v("All")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.filterableColumns, function(column) {
+                    return _c(
+                      "option",
+                      { key: column.name, domProps: { value: column.name } },
+                      [_vm._v(_vm._s(column.label))]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticClass: "sr-only",
+                  attrs: { for: "inlineFormInputName2" }
+                },
+                [_vm._v("Search")]
+              ),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.tableData.searchColumn,
-                    expression: "tableData.searchColumn"
+                    value: _vm.tableData.searchText,
+                    expression: "tableData.searchText"
                   }
                 ],
-                staticClass: "custom-select mr-sm-2",
-                attrs: { id: "columnFilter" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.tableData,
-                      "searchColumn",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { selected: "", value: "*" } }, [
-                  _vm._v("All")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.filterableColumns, function(column) {
-                  return _c(
-                    "option",
-                    { key: column.name, domProps: { value: column.name } },
-                    [_vm._v(_vm._s(column.label))]
-                  )
-                })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "sr-only",
-                attrs: { for: "inlineFormInputName2" }
-              },
-              [_vm._v("Search")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tableData.searchText,
-                  expression: "tableData.searchText"
-                }
-              ],
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "text",
-                id: "inlineFormInputName2",
-                placeholder: "Search here ..."
-              },
-              domProps: { value: _vm.tableData.searchText },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.$emit("searched")
+                staticClass: "form-control mr-sm-2",
+                attrs: {
+                  type: "text",
+                  id: "inlineFormInputName2",
+                  placeholder: "Search here ..."
                 },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.tableData, "searchText", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                domProps: { value: _vm.tableData.searchText },
                 on: {
-                  click: function($event) {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
                     return _vm.$emit("searched")
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.tableData, "searchText", $event.target.value)
                   }
                 }
-              },
-              [_c("i", { staticClass: "fas fa-search" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit" },
-                on: { click: _vm.createModal }
-              },
-              [_vm._v("Add New")]
-            )
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit" },
+                  on: { click: _vm.createModal }
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -50587,7 +50805,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Lockers")])
     ])
   },
@@ -50931,27 +51149,85 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
+        _c("div", { staticClass: "card-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right form-group" }, [
+              _c("label", { staticClass: "font-weight-normal mr-2" }, [
+                _vm._v("Filter Column")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.searchColumn,
+                      expression: "tableData.searchColumn"
+                    }
+                  ],
+                  staticClass: "custom-select mr-sm-2",
+                  attrs: { id: "columnFilter" },
+                  on: {
+                    change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
                           return o.selected
@@ -50962,149 +51238,97 @@ var render = function() {
                         })
                       _vm.$set(
                         _vm.tableData,
-                        "perPage",
+                        "searchColumn",
                         $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
                     }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right form-group" }, [
-            _c("label", { staticClass: "font-weight-normal mr-2" }, [
-              _vm._v("Filter Column")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
+                  }
+                },
+                [
+                  _c("option", { attrs: { selected: "", value: "*" } }, [
+                    _vm._v("All")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.filterableColumns, function(column) {
+                    return _c(
+                      "option",
+                      { key: column.name, domProps: { value: column.name } },
+                      [_vm._v(_vm._s(column.label))]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticClass: "sr-only",
+                  attrs: { for: "inlineFormInputName2" }
+                },
+                [_vm._v("Search")]
+              ),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.tableData.searchColumn,
-                    expression: "tableData.searchColumn"
+                    value: _vm.tableData.searchText,
+                    expression: "tableData.searchText"
                   }
                 ],
-                staticClass: "custom-select mr-sm-2",
-                attrs: { id: "columnFilter" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.tableData,
-                      "searchColumn",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { selected: "", value: "*" } }, [
-                  _vm._v("All")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.filterableColumns, function(column) {
-                  return _c(
-                    "option",
-                    { key: column.name, domProps: { value: column.name } },
-                    [_vm._v(_vm._s(column.label))]
-                  )
-                })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "sr-only",
-                attrs: { for: "inlineFormInputName2" }
-              },
-              [_vm._v("Search")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tableData.searchText,
-                  expression: "tableData.searchText"
-                }
-              ],
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "text",
-                id: "inlineFormInputName2",
-                placeholder: "Search here ..."
-              },
-              domProps: { value: _vm.tableData.searchText },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.$emit("searched")
+                staticClass: "form-control mr-sm-2",
+                attrs: {
+                  type: "text",
+                  id: "inlineFormInputName2",
+                  placeholder: "Search here ..."
                 },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.tableData, "searchText", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                domProps: { value: _vm.tableData.searchText },
                 on: {
-                  click: function($event) {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
                     return _vm.$emit("searched")
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.tableData, "searchText", $event.target.value)
                   }
                 }
-              },
-              [_c("i", { staticClass: "fas fa-search" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit" },
-                on: { click: _vm.createModal }
-              },
-              [_vm._v("Add New")]
-            )
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit" },
+                  on: { click: _vm.createModal }
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -51354,7 +51578,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Plants")])
     ])
   },
@@ -51400,27 +51624,85 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
+        _c("div", { staticClass: "card-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right form-group" }, [
+              _c("label", { staticClass: "font-weight-normal mr-2" }, [
+                _vm._v("Filter Column")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.searchColumn,
+                      expression: "tableData.searchColumn"
+                    }
+                  ],
+                  staticClass: "custom-select mr-sm-2",
+                  attrs: { id: "columnFilter" },
+                  on: {
+                    change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
                           return o.selected
@@ -51431,149 +51713,97 @@ var render = function() {
                         })
                       _vm.$set(
                         _vm.tableData,
-                        "perPage",
+                        "searchColumn",
                         $event.target.multiple
                           ? $$selectedVal
                           : $$selectedVal[0]
                       )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
                     }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right form-group" }, [
-            _c("label", { staticClass: "font-weight-normal mr-2" }, [
-              _vm._v("Filter Column")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
+                  }
+                },
+                [
+                  _c("option", { attrs: { selected: "", value: "*" } }, [
+                    _vm._v("All")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.filterableColumns, function(column) {
+                    return _c(
+                      "option",
+                      { key: column.name, domProps: { value: column.name } },
+                      [_vm._v(_vm._s(column.label))]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticClass: "sr-only",
+                  attrs: { for: "inlineFormInputName2" }
+                },
+                [_vm._v("Search")]
+              ),
+              _vm._v(" "),
+              _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.tableData.searchColumn,
-                    expression: "tableData.searchColumn"
+                    value: _vm.tableData.searchText,
+                    expression: "tableData.searchText"
                   }
                 ],
-                staticClass: "custom-select mr-sm-2",
-                attrs: { id: "columnFilter" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.tableData,
-                      "searchColumn",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              [
-                _c("option", { attrs: { selected: "", value: "*" } }, [
-                  _vm._v("All")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.filterableColumns, function(column) {
-                  return _c(
-                    "option",
-                    { key: column.name, domProps: { value: column.name } },
-                    [_vm._v(_vm._s(column.label))]
-                  )
-                })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "sr-only",
-                attrs: { for: "inlineFormInputName2" }
-              },
-              [_vm._v("Search")]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.tableData.searchText,
-                  expression: "tableData.searchText"
-                }
-              ],
-              staticClass: "form-control mr-sm-2",
-              attrs: {
-                type: "text",
-                id: "inlineFormInputName2",
-                placeholder: "Search here ..."
-              },
-              domProps: { value: _vm.tableData.searchText },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !$event.type.indexOf("key") &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
-                  }
-                  return _vm.$emit("searched")
+                staticClass: "form-control mr-sm-2",
+                attrs: {
+                  type: "text",
+                  id: "inlineFormInputName2",
+                  placeholder: "Search here ..."
                 },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.tableData, "searchText", $event.target.value)
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                domProps: { value: _vm.tableData.searchText },
                 on: {
-                  click: function($event) {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
                     return _vm.$emit("searched")
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.tableData, "searchText", $event.target.value)
                   }
                 }
-              },
-              [_c("i", { staticClass: "fas fa-search" })]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit" },
-                on: { click: _vm.createModal }
-              },
-              [_vm._v("Add New")]
-            )
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "form-control btn btn-default mr-sm-2 bg-red",
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "submit" },
+                  on: { click: _vm.createModal }
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -51823,7 +52053,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Roles")])
     ])
   },
@@ -51869,121 +52099,125 @@ var render = function() {
   return _c("div", { staticClass: "row justify-content-center" }, [
     _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header form-inline" }, [
-          _c("div", { staticClass: "float-left form-inline" }, [
-            _c("label", { staticClass: "font-weight-normal" }, [
-              _vm._v("Show")
-            ]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.perPage,
-                    expression: "tableData.perPage"
-                  }
-                ],
-                staticClass: "custom-select ml-2",
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.tableData,
-                        "perPage",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    },
-                    function($event) {
-                      return _vm.$emit("perPageOptionChanged")
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.perPageDropDown, function(pageNo) {
-                return _c(
-                  "option",
-                  { key: pageNo.id, domProps: { value: pageNo } },
-                  [_vm._v(_vm._s(pageNo))]
-                )
-              }),
-              0
-            )
-          ]),
-          _vm._v(" "),
+        _c("div", { staticClass: "card-header" }, [
           _vm._m(0),
           _vm._v(" "),
-          _c("div", { staticClass: "card-tools float-right" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Search"
+          _c("div", { staticClass: "form-inline" }, [
+            _c("div", { staticClass: "float-left form-inline" }, [
+              _c("label", { staticClass: "font-weight-normal" }, [
+                _vm._v("Show")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.tableData.perPage,
+                      expression: "tableData.perPage"
+                    }
+                  ],
+                  staticClass: "custom-select ml-2",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          _vm.tableData,
+                          "perPage",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      },
+                      function($event) {
+                        return _vm.$emit("perPageOptionChanged")
+                      }
+                    ]
+                  }
                 },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searched")
-                  }
-                }
-              },
-              [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
-            ),
+                _vm._l(_vm.perPageDropDown, function(pageNo) {
+                  return _c(
+                    "option",
+                    { key: pageNo.id, domProps: { value: pageNo } },
+                    [_vm._v(_vm._s(pageNo))]
+                  )
+                }),
+                0
+              )
+            ]),
             _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
-                attrs: {
-                  disabled:
-                    Object.entries(_vm.tableData.search).length === 0 &&
-                    _vm.tableData.search.constructor === Object,
-                  "data-toggle": "tooltip",
-                  title: "Reset Search"
+            _c("div", { staticStyle: { margin: "0 auto" } }),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools float-right" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-green",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Search"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searched")
+                    }
+                  }
                 },
-                on: {
-                  click: function($event) {
-                    return _vm.$emit("searchReset")
+                [_c("i", { staticClass: "fas fa-search" }), _vm._v("  Search")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mb-2 mr-sm-2 bg-red",
+                  attrs: {
+                    disabled:
+                      Object.entries(_vm.tableData.search).length === 0 &&
+                      _vm.tableData.search.constructor === Object,
+                    "data-toggle": "tooltip",
+                    title: "Reset Search"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.$emit("searchReset")
+                    }
                   }
-                }
-              },
-              [
-                _c("i", { staticClass: "fas fa-power-off" }),
-                _vm._v("  Reset Search")
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary mb-2",
-                attrs: { type: "submit" },
-                on: {
-                  click: function($event) {
-                    _vm.createModal()
-                    _vm.viewDocument = false
-                    _vm.documentSrc = ""
+                },
+                [
+                  _c("i", { staticClass: "fas fa-power-off" }),
+                  _vm._v("  Reset Search")
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary mb-2",
+                  attrs: { type: "submit" },
+                  on: {
+                    click: function($event) {
+                      _vm.createModal()
+                      _vm.viewDocument = false
+                      _vm.documentSrc = ""
+                    }
                   }
-                }
-              },
-              [_vm._v("Add New")]
-            )
+                },
+                [_vm._v("Add New")]
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -52557,7 +52791,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticStyle: { margin: "0 auto" } }, [
+    return _c("div", { staticClass: "text-center" }, [
       _c("h3", [_vm._v("Users")])
     ])
   },
@@ -71308,8 +71542,8 @@ router.afterEach(function (to, from) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\dms\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\dms\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\dms_dev\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\dms_dev\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
