@@ -13,6 +13,10 @@
         </li>
     </ul>
 
+    <div class="mx-auto">
+        <h3 class="font-weight-light" style="margin-left: -10rem !important">Document Management System</h3>
+    </div>
+
     <!-- SEARCH FORM -->
     {{-- <form class="form-inline ml-3">
         <div class="input-group input-group-sm">
