@@ -23,3 +23,20 @@ $fa-font-path: "../webfonts";
     background-color: #007bff;
     color: #fff !important;
 }
+
+// Custom Scrollbar in browser
+::-webkit-scrollbar
+{
+  width: 10px;  /* for vertical scrollbars */
+  height: 10px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(196, 28, 28, 0.5);
+}
