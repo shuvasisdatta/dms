@@ -47739,7 +47739,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -48343,7 +48344,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -49127,7 +49129,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -50131,7 +50134,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -50641,7 +50645,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -51414,7 +51419,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -51889,7 +51895,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -52471,7 +52478,8 @@ var render = function() {
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "ModalTitle",
-          "aria-hidden": "true"
+          "aria-hidden": "true",
+          "data-backdrop": "static"
         }
       },
       [
@@ -71542,8 +71550,8 @@ router.afterEach(function (to, from) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\dms_dev\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\dms_dev\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\dms v0.3\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\dms v0.3\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
