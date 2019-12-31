@@ -131,7 +131,7 @@ class DocumentController extends Controller
         
         if($request->document) {
             $this->validate($request, [
-                'document'      => 'required|file|max:51200', // Restrict maximum document size to 50 MB. You can customize it here.
+                'document'      => 'required|file|max:102400', // Restrict maximum document size to 100 MB. You can customize it here.
             ]);
         }
 
@@ -191,7 +191,70 @@ class DocumentController extends Controller
             // 'user_id'       => 'required|numeric|exists:users,id',
         ]);
 
-        $document->update($request->all());
+        if($request->document) {
+            $this->validate($request, [
+                'document'      => 'required|file|max:102400', // Restrict maximum document size to 100 MB. You can customize it here.
+            ]);
+        }
+
+        $time= round(microtime(true) * 1000); // time in miliseconds
+        if($request->document) {
+            $fileName = Str::before($request->document->getClientOriginalName(), '.'.$request->document->extension()) . $time . '.'.$request->document->extension(); 
+            $path = $request->document->storeAs('public/documents/'. $request->plant_id . '/' . $request->equipment_id . '/' . $request->department_id . '/'. $request->category_id . '/' . $request->locker_id . '/' , $fileName);
+            
+            // Check a document is already there or not. If present then delete the document.
+            if(!is_numeric($document->slug)) {
+                // delete the file
+                unlink(Str::replaceLast('public', 'storage/', public_path($document->slug)));
+            }
+        }
+        
+        $document_data = [
+            'title'         => $request->title,    
+            'description'   => $request->description,   
+            'department_id' => $request->department_id,   
+            'plant_id'      => $request->plant_id,   
+            'equipment_id'  => $request->equipment_id,   
+            'category_id'   => $request->category_id,   
+            'locker_id'     => $request->locker_id,
+            'user_id'       => 1, // by default it's Admin
+            'type'          => $request->document? $request->document->extension(): $document->type,
+            'slug'          => $request->document? $path: $document->slug
+        ];    
+    
+        $document->update($document_data);  
+
+
+        // update for document upload in edit mode also
+        // if($request->document) {
+        //     $this->validate($request, [
+        //         'document'      => 'required|file|max:51200', // Restrict maximum document size to 50 MB. You can customize it here.
+        //     ]);
+        // }
+
+        // $time= round(microtime(true) * 1000); // time in miliseconds
+        // if($request->document) {
+        //     $fileName = Str::before($request->document->getClientOriginalName(), '.'.$request->document->extension()) . $time . '.'.$request->document->extension(); 
+        //     $path = $request->document->storeAs('public/documents/'. $request->plant_id . '/' . $request->equipment_id . '/' . $request->department_id . '/'. $request->category_id . '/' . $request->locker_id . '/' , $fileName);
+        // }
+
+        // $document_data = [
+        //     'title'         => $request->title,    
+        //     'description'   => $request->description,   
+        //     'department_id' => $request->department_id,   
+        //     'plant_id'      => $request->plant_id,   
+        //     'equipment_id'  => $request->equipment_id,   
+        //     'category_id'   => $request->category_id,   
+        //     'locker_id'     => $request->locker_id,
+        //     'user_id'       => 1, // by default it's Admin
+        //     'type'          => $request->document? $request->document->extension(): '',
+        //     'slug'          => $request->document? $path: $time
+        // ];    
+
+        // $document->update($document_data);
+        // end of update for document upload in edit mode also
+
+        // $document->update($request->all());
             
         return $document;
     }
