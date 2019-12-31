@@ -2,24 +2,29 @@
      <div class="row justify-content-center">
          <div class="col-12">
              <div class="card">
-               <div class="card-header form-inline">
-                   <div class="float-left form-inline">
-                       <label class="font-weight-normal">Show</label>
-                        <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
-                            <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
-                        </select>
-                   </div>
-                   <div style="margin:0 auto"><h3>Documents</h3></div>
-                   <div class="card-tools float-right">
-                        <button class="btn btn-default mb-2 mr-sm-2 bg-green"  
-                            :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"
-                            data-toggle="tooltip" title="Search"
-                            @click="$emit('searched')"><i class="fas fa-search"></i>&nbsp; Search</button>
-                        <button class="btn btn-default mb-2 mr-sm-2 bg-red"
-                            :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"  
-                            data-toggle="tooltip" title="Reset Search"
-                            @click="$emit('searchReset')"><i class="fas fa-power-off"></i>&nbsp; Reset Search</button>
-                        <button type="submit" class="btn btn-primary mb-2" v-if="$parent.userRole === 'Admin'" @click="createModal(); viewDocument = false; documentSrc='';">Add New</button>
+               <div class="card-header">
+                    <div class="text-center"><h3>Documents</h3></div>
+                    <div class="form-inline">
+                        <div class="form-inline float-left">
+                            <label class="font-weight-normal">Show</label>
+                                <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
+                                    <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
+                                </select>
+                        </div>
+                        <div style="margin:0 auto">
+                            <!-- <h3>Documents</h3> -->
+                        </div>
+                        <div class="card-tools float-right">
+                            <button class="btn btn-default mb-2 mr-sm-2 bg-green"  
+                                :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"
+                                data-toggle="tooltip" title="Search"
+                                @click="$emit('searched')"><i class="fas fa-search"></i>&nbsp; Search</button>
+                            <button class="btn btn-default mb-2 mr-sm-2 bg-red"
+                                :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"  
+                                data-toggle="tooltip" title="Reset Search"
+                                @click="$emit('searchReset')"><i class="fas fa-power-off"></i>&nbsp; Reset Search</button>
+                            <button type="submit" class="btn btn-primary mb-2" v-if="$parent.userRole === 'Admin'" @click="createModal(); viewDocument = false; documentSrc='';">Add New</button>
+                        </div>
                     </div>
                </div>
                <!-- /.card-header -->
@@ -42,7 +47,7 @@
                                 <td>
                                     <input type="text" 
                                         class="form-control" 
-                                        name="description" 
+                                        name="description"
                                         placeholder="Filter description"
                                         v-model="tableData.search.description"
                                         @keyup.enter="$emit('columnFiltered', 'description')" />
@@ -266,7 +271,19 @@
                                  <has-error :form="form" field="user_id"></has-error>
                             </div> -->
                              
-                             <div class="form-group" v-if="!editMode">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio"  v-model="wantToUploadOrChangeDocument" v-bind:value=1 @click="wantToUploadOrChangeDocument = 1" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadioInline1">Upload/Change Document</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio"  v-model="wantToUploadOrChangeDocument" v-bind:value=0 @click="wantToUploadOrChangeDocument = 0" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+                                <label class="custom-control-label" for="customRadioInline2">Don't Upload/Change Document</label>
+                            </div>           
+
+                            <br/><br/>
+
+                             <!-- <div class="form-group" v-if="!editMode"> -->
+                             <div class="form-group" v-if="wantToUploadOrChangeDocument">
                                 <label>Document</label>
                                 <div class="input-group bg-secondary">
                                  <input type="text" class="form-control" :class="{ 'is-invalid': form.errors.has('document') }"
@@ -354,6 +371,7 @@
             })
 
             return {
+                wantToUploadOrChangeDocument: 0,
                 fileUploadPercentage: 0,
                 documentSrc: '',
                 documentTypeMusic: ['mp3'],
@@ -450,6 +468,10 @@
 
             createModal() {
                 this.editMode = false;
+
+                // By default document uploader view is true
+                this.wantToUploadOrChangeDocument = 1;
+
                 this.form.clear();
                 this.form.reset();
                 
@@ -462,10 +484,17 @@
 
             editModal(data) {
                 this.editMode = true;
+
+                // By default document uploader view is false
+                this.wantToUploadOrChangeDocument = 0;
+
                 this.form.clear();
                 this.form.reset();
                 
                 this.getRelatedResources('edit');
+                
+                // make document to empty string as this is not coming from server, it is local variable
+                data.document = ''
                 this.form.fill(data);
                 this.$emit('plantSelected', this.form.plant_id, 'edit')
                 $('#Modal').modal('show');
@@ -579,8 +608,20 @@
 
             updateData() {
                 this.$Progress.start()
-                this.form.put(this.api_url + "/" + this.form.id)
-                .then(() => {
+                // this.form.put(this.api_url + "/" + this.form.id)
+                this.form.submit('post', this.api_url + "/" + this.form.id, {
+                    transformRequest: [function (data, headers) {
+                        data['_method'] = 'PUT';
+                        return objectToFormData(data)
+                    }],
+                    onUploadProgress: e => {
+                        // Do whatever you want with the progress event
+                        if(this.form.document) {
+                            let percentCompleted = Math.round(e.loaded/e.total * 100);
+                            this.fileUploadPercentage = percentCompleted;
+                        }
+                    }
+                }).then(() => {
                     $('#Modal').modal('hide');
                     toast.fire({
                         title: 'Information updated successfully',
