@@ -1,25 +1,29 @@
 <template>
      <div class="row justify-content-center">
          <div class="col-12">
-             <div class="card">
-                <div class="card-header form-inline">
-                   <div class="float-left form-inline">
-                       <label class="font-weight-normal">Show</label>
-                        <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
-                            <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
-                        </select>
-                   </div>
-                   <div style="margin:0 auto"><h3>Equipments</h3></div>
-                   <div class="card-tools float-right">
-                        <button class="btn btn-default mb-2 mr-sm-2 bg-green"  
-                            :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"
-                            data-toggle="tooltip" title="Search"
-                            @click="$emit('searched')"><i class="fas fa-search"></i>&nbsp; Search</button>
-                        <button class="btn btn-default mb-2 mr-sm-2 bg-red"
-                            :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"  
-                            data-toggle="tooltip" title="Reset Search"
-                            @click="$emit('searchReset')"><i class="fas fa-power-off"></i>&nbsp; Reset Search</button>
-                        <button type="submit" class="btn btn-primary mb-2" @click="createModal(); viewDocument = false; documentSrc='';">Add New</button>
+             <div class="card"><div class="card-header">
+                    <div class="text-center"><h3>Equipments</h3></div>
+                    <div class="form-inline">
+                        <div class="float-left form-inline">
+                            <label class="font-weight-normal">Show</label>
+                                <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
+                                    <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
+                                </select>
+                        </div>
+                        <div style="margin:0 auto">
+                            <!-- <h3>Equipments</h3> -->
+                        </div>
+                        <div class="card-tools float-right">
+                                <button class="btn btn-default mb-2 mr-sm-2 bg-green"  
+                                    :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"
+                                    data-toggle="tooltip" title="Search"
+                                    @click="$emit('searched')"><i class="fas fa-search"></i>&nbsp; Search</button>
+                                <button class="btn btn-default mb-2 mr-sm-2 bg-red"
+                                    :disabled="Object.entries(tableData.search).length === 0 && tableData.search.constructor === Object"  
+                                    data-toggle="tooltip" title="Reset Search"
+                                    @click="$emit('searchReset')"><i class="fas fa-power-off"></i>&nbsp; Reset Search</button>
+                                <button type="submit" class="btn btn-primary mb-2" @click="createModal(); viewDocument = false; documentSrc='';">Add New</button>
+                        </div>
                     </div>
                </div>
                <!-- /.card-header -->

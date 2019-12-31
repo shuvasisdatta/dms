@@ -2,25 +2,30 @@
      <div class="row justify-content-center">
          <div class="col-12">
              <div class="card">
-               <div class="card-header form-inline">
-                   <div class="float-left form-inline">
-                       <label class="font-weight-normal">Show</label>
-                        <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
-                            <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
-                        </select>
-                   </div>
-                   <div style="margin:0 auto"><h3>Plants</h3></div>
-                   <div class="card-tools float-right form-group">
-                     <label class="font-weight-normal mr-2">Filter Column</label>
-                     <select class="custom-select mr-sm-2" id="columnFilter" v-model="tableData.searchColumn">
-                        <option selected value="*">All</option>
-                        <option v-for="column in filterableColumns" :key="column.name" :value="column.name">{{ column.label }}</option>
-                    </select>
-                    <label class="sr-only" for="inlineFormInputName2">Search</label>
-                    <input type="text" class="form-control mr-sm-2" v-model="tableData.searchText" @keyup.enter="$emit('searched')" id="inlineFormInputName2" placeholder="Search here ...">
-                    <button class="form-control btn btn-default mr-sm-2 bg-red"  @click="$emit('searched')"><i class="fas fa-search"></i></button>
-                    <button type="submit" class="btn btn-primary" @click="createModal">Add New</button>
-                </div>
+                 <div class="card-header">
+                    <div class="text-center"><h3>Plants</h3></div>
+                    <div class="form-inline">
+                        <div class="float-left form-inline">
+                            <label class="font-weight-normal">Show</label>
+                                <select class="custom-select ml-2" v-model="tableData.perPage" @change="$emit('perPageOptionChanged')">
+                                    <option v-for="pageNo in perPageDropDown" :key="pageNo.id" :value="pageNo">{{ pageNo }}</option>
+                                </select>
+                        </div>
+                        <div style="margin:0 auto">
+                            <!-- <h3>Plants</h3> -->
+                        </div>
+                        <div class="card-tools float-right form-group">
+                            <label class="font-weight-normal mr-2">Filter Column</label>
+                            <select class="custom-select mr-sm-2" id="columnFilter" v-model="tableData.searchColumn">
+                                <option selected value="*">All</option>
+                                <option v-for="column in filterableColumns" :key="column.name" :value="column.name">{{ column.label }}</option>
+                            </select>
+                            <label class="sr-only" for="inlineFormInputName2">Search</label>
+                            <input type="text" class="form-control mr-sm-2" v-model="tableData.searchText" @keyup.enter="$emit('searched')" id="inlineFormInputName2" placeholder="Search here ...">
+                            <button class="form-control btn btn-default mr-sm-2 bg-red"  @click="$emit('searched')"><i class="fas fa-search"></i></button>
+                            <button type="submit" class="btn btn-primary" @click="createModal">Add New</button>
+                        </div>
+                    </div>
                </div>
                <!-- /.card-header -->
                <div class="card-body table-responsive">
